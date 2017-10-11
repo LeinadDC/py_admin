@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2e6215c3-f04f-4e0c-ac2a-33ee16cfeb7e" name="Default" comment="" />
+    <list default="true" id="2e6215c3-f04f-4e0c-ac2a-33ee16cfeb7e" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pgadmin.py" afterPath="$PROJECT_DIR$/pgadmin.py" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,13 +16,13 @@
       <file leaf-file-name="pgadmin.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pgadmin.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="14" column="0" lean-forward="true" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+            <state relative-caret-position="901">
+              <caret line="53" column="17" lean-forward="false" selection-start-line="53" selection-start-column="17" selection-end-line="53" selection-end-column="17" />
               <folding>
-                <marker date="1507757763570" expanded="true" signature="754:773" ph="CREATE TABLE... missing_value" />
-                <marker date="1507757763570" expanded="true" signature="1519:1587" ph="CREATE TABLE... test" />
-                <marker date="1507757763570" expanded="true" signature="1588:1590" ph="CREATE TABLE... test" />
-                <marker date="1507757763570" expanded="true" signature="1588:1685" ph="CREATE TABLE... vendors" />
+                <marker date="1507760106196" expanded="true" signature="753:772" ph="CREATE TABLE... missing_value" />
+                <marker date="1507760106196" expanded="true" signature="1234:1249" ph="ALTER TABLE missing_value... " />
+                <marker date="1507760106196" expanded="true" signature="1234:1251" ph="ALTER TABLE " />
+                <marker date="1507760106196" expanded="true" signature="1973:2020" ph="CREATE TABLE... vendors" />
               </folding>
             </state>
           </provider>
@@ -53,8 +55,8 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="279" />
-    <option name="y" value="88" />
+    <option name="x" value="265" />
+    <option name="y" value="162" />
     <option name="width" value="1389" />
     <option name="height" value="874" />
   </component>
@@ -119,7 +121,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="279" y="88" width="1389" height="874" extended-state="0" />
+    <frame x="265" y="162" width="1389" height="874" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25054625" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -159,10 +161,10 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1507757763570" expanded="true" signature="754:773" ph="CREATE TABLE... missing_value" />
-            <marker date="1507757763570" expanded="true" signature="1519:1587" ph="CREATE TABLE... test" />
-            <marker date="1507757763570" expanded="true" signature="1588:1590" ph="CREATE TABLE... test" />
-            <marker date="1507757763570" expanded="true" signature="1588:1685" ph="CREATE TABLE... vendors" />
+            <marker date="1507760106196" expanded="true" signature="753:772" ph="CREATE TABLE... missing_value" />
+            <marker date="1507760106196" expanded="true" signature="1234:1249" ph="ALTER TABLE missing_value... " />
+            <marker date="1507760106196" expanded="true" signature="1234:1251" ph="ALTER TABLE " />
+            <marker date="1507760106196" expanded="true" signature="1973:2020" ph="CREATE TABLE... vendors" />
           </folding>
         </state>
       </provider>
@@ -177,13 +179,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pgadmin.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="0" lean-forward="true" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+        <state relative-caret-position="901">
+          <caret line="53" column="17" lean-forward="false" selection-start-line="53" selection-start-column="17" selection-end-line="53" selection-end-column="17" />
           <folding>
-            <marker date="1507757763570" expanded="true" signature="754:773" ph="CREATE TABLE... missing_value" />
-            <marker date="1507757763570" expanded="true" signature="1519:1587" ph="CREATE TABLE... test" />
-            <marker date="1507757763570" expanded="true" signature="1588:1590" ph="CREATE TABLE... test" />
-            <marker date="1507757763570" expanded="true" signature="1588:1685" ph="CREATE TABLE... vendors" />
+            <marker date="1507760106196" expanded="true" signature="753:772" ph="CREATE TABLE... missing_value" />
+            <marker date="1507760106196" expanded="true" signature="1234:1249" ph="ALTER TABLE missing_value... " />
+            <marker date="1507760106196" expanded="true" signature="1234:1251" ph="ALTER TABLE " />
+            <marker date="1507760106196" expanded="true" signature="1973:2020" ph="CREATE TABLE... vendors" />
           </folding>
         </state>
       </provider>

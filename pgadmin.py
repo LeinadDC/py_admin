@@ -13,7 +13,6 @@ def create_database():
 
     validaCreacion(createDBQuery)
 
-
 def create_table():
     nombreTabla = input("Ingrese el nombre de la tabla: ")
     atributosTabla = input("Los atributos se deben ingresar de la siguiente manera:\n"
@@ -23,6 +22,14 @@ def create_table():
 
     validaCreacion(createTableQuery)
 
+def alter_table():
+    nombreTabla = input("Ingrese el nombre de la tabla que desea editar: ")
+    argumentoAlteracion = input("El argumento de alteracion se debe ingeresar de la siguiente manera: \n"
+                                "ADD COLUMN edad INT NOT NULL\n"
+                                "Ingrese el argumento de alteracion que desea ejecutar: \n")
+    alterTableQuery = """ALTER TABLE {} {}""".format(nombreTabla, argumentoAlteracion)
+
+    validaCreacion(alterTableQuery)
 
 def validaCreacion(query):
     print("Está a punto de ejecutar el siguiente query: \n"
@@ -43,15 +50,6 @@ def validaCreacion(query):
         print("Escriba una respuesta correcta")
         validaCreacion(query)
 
-
-"""
-
-    cursor.execute("CREATE TABLE test (id serial PRIMARY KEY, num integer, data varchar);")
-    conn.commit()
-
-    print(cursor.query)
-"""
-
 if __name__ == '__main__':
-    create_table()
+    alter_table()
 
