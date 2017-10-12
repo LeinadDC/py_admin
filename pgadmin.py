@@ -1,11 +1,14 @@
-import psycopg2
+import psycopg2, menu
 
-try:
-    conn = psycopg2.connect(host="192.168.0.11", dbname="postgres", user="sysdba", password="kelly123")
-    print("Connecting to PostgreSQL")
-    cursor = conn.cursor()
-except psycopg2.Error as e:
-    print(e)
+class DatabaseConn():
+    def __init__(self):
+        try:
+            self.conn = psycopg2.connect(host="192.168.0.11", dbname="postgres", user="sysdba", password="kelly123")
+            self.cursor = self.conn.cursor()
+        except psycopg2.Error as e:
+            print(e)
+
+db = DatabaseConn()
 
 def create_database():
     nombreBD = input("Ingrese el nombre de la base de datos: ")
@@ -40,8 +43,8 @@ def validaCreacion(query):
 
     if respuestaEnMinuscula == 's' or respuestaEnMinuscula == 'si':
         try:
-            cursor.execute(query)
-            conn.commit()
+            db.cursor.execute(query)
+            db.conn.commit()
         except psycopg2.Error as e:
             print(e)
     elif respuestaEnMinuscula == 'n' or respuestaEnMinuscula =='no':
@@ -50,6 +53,12 @@ def validaCreacion(query):
         print("Escriba una respuesta correcta")
         validaCreacion(query)
 
+mainMenu = menu.Menu()
+
+mainMenu.set_options([
+("Conectarse a una base de datos", conn)])
+
+
 if __name__ == '__main__':
-    alter_table()
+    mainMenu.open()
 
