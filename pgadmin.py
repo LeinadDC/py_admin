@@ -3,7 +3,7 @@ import psycopg2, menu
 class DatabaseConn():
     def __init__(self):
         try:
-            self.conn = psycopg2.connect(host="192.168.0.11", dbname="postgres", user="sysdba", password="kelly123")
+            self.conn = psycopg2.connect(host="192.168.20.128", dbname="postgres", user="sysdba", password="kelly123")
             self.cursor = self.conn.cursor()
         except psycopg2.Error as e:
             print(e)
@@ -100,19 +100,23 @@ class DatabaseAction():
 
         self.validaCreacion(updateGeneralQuery)
 
-    def listaFunciones(self):
-        lista = ["Create Table","Alter Table","Delete Table"]
-        print("Hola")
-
 dbaction = DatabaseAction()
 
 mainMenu = menu.Menu()
 ddlMenu = menu.Menu()
+updateMenu = menu.Menu()
+
+updateMenu.set_title("Menu Update")
+updateMenu.set_options([
+    ("Update con where", dbaction.update_data_where),
+    ("Update con una condición",dbaction.update_data_general),
+    ("Volver al menú DDL",updateMenu.close)])
+
 ddlMenu.set_title("Menu DDL")
 ddlMenu.set_options([
     ("Crear una nueva tabla",dbaction.create_table),
     ("Eliminar una tabla existente",dbaction.delete_table),
-    ("Alterar una tabla existente",dbaction.alter_table),
+    ("Alterar una tabla existente",updateMenu.open),
     ("Volver al menú principal",ddlMenu.close)])
 
 dmlMenu = menu.Menu()
@@ -128,8 +132,7 @@ mainMenu.set_title("Bienvenido a Py Admin")
 mainMenu.set_options([
     ("Crear una base de datos", dbaction.create_database),
     ("Menu DDL", ddlMenu.open),
-    ("Menu DML",dmlMenu.open),
-    ("Ver lista de funciones",dbaction.listaFunciones)])
+    ("Menu DML",dmlMenu.open)])
 
 
 if __name__ == '__main__':
