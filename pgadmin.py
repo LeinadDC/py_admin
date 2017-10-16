@@ -3,7 +3,7 @@ import psycopg2, menu
 class DatabaseConn():
     def __init__(self):
         try:
-            self.conn = psycopg2.connect(host="192.168.20.128", dbname="postgres", user="sysdba", password="kelly123")
+            self.conn = psycopg2.connect(host="192.168.0.12", dbname="postgres", user="sysdba", password="kelly123")
             self.cursor = self.conn.cursor()
         except psycopg2.Error as e:
             print(e)
@@ -12,6 +12,7 @@ db = DatabaseConn()
 
 class DatabaseAction():
 
+    '''CREAR BASE DE DATOS'''
     def create_database(self):
         nombreBD = input("Ingrese el nombre de la base de datos: ")
         createDBQuery = """CREATE DATABASE {}""".format(nombreBD)
@@ -44,6 +45,7 @@ class DatabaseAction():
 
         self.validaCreacion(dropTableQuery)
 
+    '''METODO PARA VALIDAR TODAS LAS ACCIONES'''
     def validaCreacion(self,query):
         print("Está a punto de ejecutar el siguiente query: \n"
               "{}\n"
@@ -55,13 +57,18 @@ class DatabaseAction():
             try:
                 db.cursor.execute(query)
                 db.conn.commit()
+                print("Tabla creada\n")
+                input("Presione cualquier tecla para continuar.")
             except psycopg2.Error as e:
-                print(e)
+                print("Error encontrado en la ejecución del query: {}\n ".format(e))
+                input("¿Desea intentarlo de nuevo?\n"
+                      "Digite 's' o 'n' ")
         elif respuestaEnMinuscula == 'n' or respuestaEnMinuscula =='no':
             print("Query cancelado")
         else:
             print("Escriba una respuesta correcta")
             self.validaCreacion(query)
+        print(db.cursor.statusmessage)
 
     """AQUI INICIAN LAS FUNCIONES DDL"""
 
@@ -100,6 +107,67 @@ class DatabaseAction():
 
         self.validaCreacion(updateGeneralQuery)
 
+    def create_index(self):
+        nombreIndex = input("Ingrese el nombre del indice: ")
+        nombreTabla = input("Ingrese el nombre de la tabla: ")
+        nombreColumna = input("Ingrese el nombre de la tabla en la cual desea aplicar este indice:")
+
+        indexQuery = """CREATE INDEX {} ON {} ({})""".format(nombreIndex,nombreTabla,nombreColumna)
+
+        self.validaCreacion(indexQuery)
+    def create_index_unique(self):
+        nombreIndex = input("Ingrese el nombre del indice: ")
+        nombreTabla = input("Ingrese el nombre de la tabla: ")
+        nombreColumna = input("Ingrese el nombre de la tabla en la cual desea aplicar este indice:")
+
+        uniqueIndexQuery = """CREATE UNIQUE INDEX {} ON {} ({})""".format(nombreIndex,nombreTabla,nombreColumna)
+
+        self.validaCreacion(uniqueIndexQuery)
+
+    def alter_index(self):
+        nombreIndex = input("Ingrese el nombre del indice: ")
+        accion = input("¿Qué desea hacer?\n"
+                       "Ingrese alguna de las siguientes opciones: \n"
+                       "'r' - Renombrar \n"
+                       "'t' - Definir tablespace \n"
+                       "'s' - Definir condición \n"
+                       "'rs' - Reinciar condicón\n"
+                       "'e' - Volver al menú")
+
+        condicion = ""
+        if accion == 'r':
+            condicion = input("Ingrese el nuevo nombre: ")
+            alterIndexQuery = """ALTER INDEX IF EXISTS {} RENAME TO {}""".format(nombreIndex,condicion)
+
+        elif accion == 't':
+            condicion = input("Ingrese el nombre del tablespace: ")
+            alterIndexQuery = """ALTER INDEX IF EXISTS {} SET TABLESPACE{}""".format(nombreIndex,condicion)
+
+        elif accion == 's':
+            condicion = input("Ingrese el nombre del tablespace: ")
+            alterIndexQuery = """ALTER INDEX IF EXISTS {} SET {}""".format(nombreIndex,condicion)
+
+        elif accion == 'rs':
+            condicion = input("Ingrese el nombre del tablespace: ")
+            alterIndexQuery = """ALTER INDEX IF EXISTS {} RESET {}""".format(nombreIndex,condicion)
+        elif accion == 'e':
+            ddlMenu.close()
+            mainMenu.open()
+        else:
+            print("Ingrese una respuesta válida. ")
+            self.alter_table()
+
+        self.validaCreacion(alterIndexQuery)
+
+
+    def delete_index(self):
+        nombreIndice = input("Ingrese el nombre del indice que desea eliminar: ")
+
+        dropIndexQuery = """DROP INDEX IF EXISTS {}""".format(nombreIndice)
+
+        self.validaCreacion(dropIndexQuery)
+
+
 dbaction = DatabaseAction()
 
 mainMenu = menu.Menu()
@@ -117,6 +185,7 @@ ddlMenu.set_options([
     ("Crear una nueva tabla",dbaction.create_table),
     ("Eliminar una tabla existente",dbaction.delete_table),
     ("Alterar una tabla existente",updateMenu.open),
+    ("Alterar un indice",dbaction.alter_index),
     ("Volver al menú principal",ddlMenu.close)])
 
 dmlMenu = menu.Menu()
