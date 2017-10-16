@@ -19,7 +19,7 @@ class DatabaseAction():
 
         self.validaCreacion(createDBQuery)
 
-    """AQUI INICIAN LAS FUNCIONES DDL"""
+    """AQUI INICIAN LAS FUNCIONES DDL DE TABLA"""
     def create_table(self):
         nombreTabla = input("Ingrese el nombre de la tabla: ")
         atributosTabla = input("Los atributos se deben ingresar de la siguiente manera:\n"
@@ -70,7 +70,7 @@ class DatabaseAction():
             self.validaCreacion(query)
         print(db.cursor.statusmessage)
 
-    """AQUI INICIAN LAS FUNCIONES DDL"""
+    """AQUI INICIAN LAS FUNCIONES DML"""
 
     def insert_data(self):
         nombreTabla = input("Ingrese el nombre de la tabla a la que desea insertar datos: ")
@@ -106,6 +106,8 @@ class DatabaseAction():
         updateGeneralQuery = """UPDATE {} SET {}""".format(nombreTabla,condicion)
 
         self.validaCreacion(updateGeneralQuery)
+
+    """AQUI INICIAN LAS FUNCIONES DDL DE INDICES"""
 
     def create_index(self):
         nombreIndex = input("Ingrese el nombre del indice: ")
@@ -167,12 +169,175 @@ class DatabaseAction():
 
         self.validaCreacion(dropIndexQuery)
 
+    """AQUI INICIA EL SELECT"""
+    def select(self):
+        columnas = input("Ingrese las columnas que desea para su selección: ")
+        nombreTabla = input("Ingrese el nombre de la tabla: ")
+
+        respuestaJoin = input("¿Desea agregarle algún tipo de JOIN a este query?")
+        respuestaJoinEnMinuscula = respuestaJoin.lower()
+        selectQuery = """SELECT {} FROM {}""".format(columnas, nombreTabla)
+
+        if respuestaJoinEnMinuscula == 's' or respuestaJoinEnMinuscula == 'si':
+            join = self.agregueJoin(selectQuery)
+            self.join_builder(selectQuery, join)
+        elif respuestaJoinEnMinuscula == 'n' or respuestaJoinEnMinuscula == 'no':
+            self.agregueClausula(selectQuery)
+        else:
+            print("Escriba una respuesta correcta")
+
+
+
+    def agregueJoin(self,selectQuery):
+        respuesta = input("¿Qué tipo de JOIN desea agregar?\n"
+                          "'j' - JOIN\n"
+                          "'ij' - INNER JOIN\n"
+                          "'lo' - LEFT OUTER JOIN\n"
+                          "'ro' - RIGHT OUTER JOIN\n"
+                          "'fo' - FULL OUTER JOIN\n"
+                          "'cj' - CROSS JOIN\n"
+                          "'n' - No agregar un JOIN\n"
+                          "Opción = ")
+        return respuesta
+
+    def join_builder(self,query, join):
+        if join == 'j':
+            condicion, tablaJoin = self.genereArgumentosJoin()
+            query += """ JOIN {} ON {}""".format(tablaJoin, condicion)
+            print(query)
+            self.agregueClausula(query)
+        elif join == 'ij':
+            condicion, tablaJoin = self.genereArgumentosJoin()
+            query += """ INNER JOIN {} ON {}""".format(tablaJoin, condicion)
+            print(query)
+            self.agregueClausula(query)
+        elif join == 'lo':
+            condicion, tablaJoin = self.genereArgumentosJoin()
+            query += """ LEFT OUTER JOIN {} ON {}""".format(tablaJoin, condicion)
+            print(query)
+            self.agregueClausula(query)
+        elif join == 'ro':
+            condicion, tablaJoin = self.genereArgumentosJoin()
+            query += """ RIGHT OUTER JOIN {} ON {}""".format(tablaJoin, condicion)
+            print(query)
+            self.agregueClausula(query)
+        elif join == 'fo':
+            condicion, tablaJoin = self.genereArgumentosJoin()
+            query += """ FULL OUTER JOIN {} ON {}""".format(tablaJoin, condicion)
+            print(query)
+            self.agregueClausula(query)
+        elif join == 'cj':
+            condicion, tablaJoin = self.genereArgumentosJoin()
+            query += """ CROSS JOIN {} ON {}""".format(tablaJoin, condicion)
+            print(query)
+            self.agregueClausula(query)
+        else:
+            print("Else")
+
+        return query
+
+    def genereArgumentosJoin(self):
+        tablaJoin = input("Ingrese la tabla con al cual desea realizar el JOIN: ")
+        condicion = input("Ingrese la condición que desea evaluar en el JOIN: ")
+        return condicion, tablaJoin
+
+    def agregueClausula(self,selectQuery):
+        respuesta = input("¿Desea agregar una clausula al query?\n"
+                          "Digite 's' o 'n' ")
+        respuestaEnMinuscula = respuesta.lower()
+        if respuestaEnMinuscula == 's' or respuestaEnMinuscula == 'si':
+            clausula = self.genereClausula()
+            self.query_builder(selectQuery, clausula)
+        elif respuestaEnMinuscula == 'n' or respuestaEnMinuscula == 'no':
+            self.validacionSelect(selectQuery)
+        else:
+            print("Escriba una respuesta correcta")
+        return selectQuery
+
+    def genereClausula(self):
+        clausula = input("¿Desea agregar una clausula al query?\n"
+                         "'w' - Where\n"
+                         "'g' - Group by\n"
+                         "'h' - Having\n"
+                         "'o' - Order By\n"
+                         "'n' - No agregar una clausula\n"
+                         "Opción = ")
+        return clausula
+
+    def query_builder(self,query, clausula):
+        if clausula == 'w':
+            condicion = input("Ingrese la condición para la clausula WHERE : ")
+            query += """ WHERE {}""".format(condicion)
+            print(query)
+            self.agregueClausula(query)
+        elif clausula == 'g':
+            condicion = input("Ingrese la condición para la clausula GROUP BY : ")
+            query += """ GROUP BY {}""".format(condicion)
+            print(query)
+            self.agregueClausula(query)
+        elif clausula == 'h':
+            condicion = input("Ingrese la condición para la clausula HAVING : ")
+            query += """ HAVING {}""".format(condicion)
+            print(query)
+            self.agregueClausula(query)
+        elif clausula == 'o':
+            condicion = input("Ingrese la condición para la clausula ORDER BY : ")
+            query += """ ORDER BY {}""".format(condicion)
+            print(query)
+            self.agregueClausula(query)
+        elif clausula == 'n':
+            pass
+        else:
+            print("Else")
+
+        return query
+
+    def validacionSelect(self,query):
+        print("Está a punto de ejecutar el siguiente query: \n"
+              "{}\n"
+              "¿Está seguro que desea hacerlo?".format(query))
+        respuesta = input("Digite 's' o 'n' ")
+        respuestaEnMinuscula = respuesta.lower()
+
+        if respuestaEnMinuscula == 's' or respuestaEnMinuscula == 'si':
+            try:
+                db.cursor.execute(query)
+                resultado = db.cursor.fetchall()
+                try:
+                    for row in resultado:
+                        print(row)
+                except psycopg2.DatabaseError as e:
+                    print(e)
+                finally:
+                    db.cursor.close()
+
+                input("Presione cualquier tecla para continuar.")
+            except psycopg2.Error as e:
+                print("Error encontrado en la ejecución del query: {}\n ".format(e))
+                input("¿Desea intentarlo de nuevo?\n"
+                      "Digite 's' o 'n' ")
+        elif respuestaEnMinuscula == 'n' or respuestaEnMinuscula =='no':
+            print("Query cancelado")
+        else:
+            print("Escriba una respuesta correcta")
+            self.validaCreacion(query)
+        print(db.cursor.statusmessage)
+
+
 
 dbaction = DatabaseAction()
 
 mainMenu = menu.Menu()
 ddlMenu = menu.Menu()
 updateMenu = menu.Menu()
+
+dmlMenu = menu.Menu()
+dmlMenu.set_title("Menu DML")
+dmlMenu.set_options([
+    ("Insertar datos",dbaction.insert_data),
+    ("Borrar datos",dbaction.delete_data),
+    ("Actualizar datos",updateMenu.open),
+    ("Volver al menú principal",dmlMenu.close)])
 
 updateMenu.set_title("Menu Update")
 updateMenu.set_options([
@@ -184,24 +349,21 @@ ddlMenu.set_title("Menu DDL")
 ddlMenu.set_options([
     ("Crear una nueva tabla",dbaction.create_table),
     ("Eliminar una tabla existente",dbaction.delete_table),
-    ("Alterar una tabla existente",updateMenu.open),
-    ("Alterar un indice",dbaction.alter_index),
+    ("Alterar una tabla existente",dbaction.alter_table),
+    ("Crear un nuevo indice",dbaction.create_index),
+    ("Crear un nuevo indice único",dbaction.create_index_unique),
+    ("Eliminar un indice existente",dbaction.delete_index),
+    ("Alterar un indice existente",dbaction.alter_index),
     ("Volver al menú principal",ddlMenu.close)])
 
-dmlMenu = menu.Menu()
-dmlMenu.set_title("Menu DML")
-dmlMenu.set_options([
-    ("Insertar datos",dbaction.insert_data),
-    ("Borrar datos",dbaction.delete_data),
-    ("Actualizar datos",dbaction.update_data_where),
-    ("Volver al menú principal",dmlMenu.close)])
-
-
+"""MENU PRINCPIAL"""
 mainMenu.set_title("Bienvenido a Py Admin")
 mainMenu.set_options([
     ("Crear una base de datos", dbaction.create_database),
     ("Menu DDL", ddlMenu.open),
-    ("Menu DML",dmlMenu.open)])
+    ("Menu DML",dmlMenu.open),
+    ("Select",dbaction.select),
+    ("Salir", mainMenu.close)])
 
 
 if __name__ == '__main__':
