@@ -1,14 +1,19 @@
-import psycopg2, menu
+import psycopg2, menu, getpass
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 class DatabaseConn():
     def __init__(self):
         try:
-            self.conn = psycopg2.connect(host="192.168.0.12", dbname="postgres", user="sysdba", password="kelly123")
+            host = input("Ingrese el host: ")
+            dbname = input("Ingrese la base de datos a la que desea conectarse: ")
+            user = input("Ingrese su usuario: ")
+            password = getpass.getpass("Ingrese su contraseña: ")
+            self.cursor = None
+            self.conn = psycopg2.connect(host=host, dbname=dbname, user=user, password=password)
             self.cursor = self.conn.cursor()
+            self.conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         except psycopg2.Error as e:
             print(e)
-
-db = DatabaseConn()
 
 class DatabaseAction():
 
@@ -18,6 +23,28 @@ class DatabaseAction():
         createDBQuery = """CREATE DATABASE {}""".format(nombreBD)
 
         self.validaCreacion(createDBQuery)
+
+    def show_all_databases(self):
+        showDBQuery = """SELECT * FROM pg_database"""
+        db.cursor.execute(showDBQuery)
+        resultado = db.cursor.fetchall()
+        try:
+            for row in resultado:
+                print(row)
+        except psycopg2.DatabaseError as e:
+            print(e)
+        input("Presione cualquier tecla para continuar.")
+
+    def show_current_database(self):
+        currentDBQuery = """SELECT current_database()"""
+        db.cursor.execute(currentDBQuery)
+        resultado = db.cursor.fetchall()
+        try:
+            for row in resultado:
+                print(row)
+        except psycopg2.DatabaseError as e:
+            print(e)
+        input("Presione cualquier tecla para continuar.")
 
     """AQUI INICIAN LAS FUNCIONES DDL DE TABLA"""
     def create_table(self):
@@ -57,7 +84,9 @@ class DatabaseAction():
             try:
                 db.cursor.execute(query)
                 db.conn.commit()
-                print("Tabla creada\n")
+                print("Accion = \n"
+                      "{}\n"
+                      "Ejecutada")
                 input("Presione cualquier tecla para continuar.")
             except psycopg2.Error as e:
                 print("Error encontrado en la ejecución del query: {}\n ".format(e))
@@ -308,8 +337,6 @@ class DatabaseAction():
                         print(row)
                 except psycopg2.DatabaseError as e:
                     print(e)
-                finally:
-                    db.cursor.close()
 
                 input("Presione cualquier tecla para continuar.")
             except psycopg2.Error as e:
@@ -323,6 +350,19 @@ class DatabaseAction():
             self.validaCreacion(query)
         print(db.cursor.statusmessage)
 
+    """CREATE FUNCTION - FUNCIONA PERO LE FALTA TRABAJO"""
+    def create_Function(self):
+        nombreFuncion = input("Ingrese el nombre de la función: ")
+        parametros = input("Ingrese los parámetros que acepta la función: ")
+        returnFuncion = input("Defina el RETURN de la función: ")
+        comoReturnFuncion = input("Defina como debe retornar esta función los datos: ")
+        declareVariable = input("Declare las variables que van dentro del segmento DECLARE: ")
+        estructuraBegin = input("Escriba la estructura de la función: ")
+
+        funcionQuery = """CREATE OR REPLACE FUNCTION {}({}) RETURNS {} AS {}\n DECLARE {};\n BEGIN \n{} END; LANGUAGE plpgsql""". \
+            format(nombreFuncion, parametros, returnFuncion, comoReturnFuncion, declareVariable, estructuraBegin)
+
+        self.validaCreacion(funcionQuery)
 
 
 dbaction = DatabaseAction()
@@ -354,11 +394,14 @@ ddlMenu.set_options([
     ("Crear un nuevo indice único",dbaction.create_index_unique),
     ("Eliminar un indice existente",dbaction.delete_index),
     ("Alterar un indice existente",dbaction.alter_index),
+    ("Crear una nueva función", dbaction.create_Function),
     ("Volver al menú principal",ddlMenu.close)])
 
 """MENU PRINCPIAL"""
 mainMenu.set_title("Bienvenido a Py Admin")
 mainMenu.set_options([
+    ("Ver lista de bases de datos", dbaction.show_all_databases),
+    ("Ver base de datos actual", dbaction.show_current_database),
     ("Crear una base de datos", dbaction.create_database),
     ("Menu DDL", ddlMenu.open),
     ("Menu DML",dmlMenu.open),
@@ -367,6 +410,10 @@ mainMenu.set_options([
 
 
 if __name__ == '__main__':
+    db = DatabaseConn()
+    while db.cursor is None:
+        db = DatabaseConn()
+
     mainMenu.open()
 
 
