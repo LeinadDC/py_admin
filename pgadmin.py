@@ -351,7 +351,7 @@ class DatabaseAction():
         print(db.cursor.statusmessage)
 
     """CREATE FUNCTION - FUNCIONA PERO LE FALTA TRABAJO"""
-    def create_Function(self):
+    def create_function(self):
         nombreFuncion = input("Ingrese el nombre de la función: ")
         parametros = input("Ingrese los parámetros que acepta la función: ")
         returnFuncion = input("Defina el RETURN de la función: ")
@@ -363,6 +363,109 @@ class DatabaseAction():
             format(nombreFuncion, parametros, returnFuncion, comoReturnFuncion, declareVariable, estructuraBegin)
 
         self.validaCreacion(funcionQuery)
+
+    """CREATE ROLE - CREATE USER"""
+
+    def create_role(self):
+        nombreRol = input("Ingrese el nombre del rol: ")
+
+        roleQuery = """CREATE ROLE {}""".format(nombreRol)
+
+        atributosRespuesta = input("¿Desea agregarle atributos al rol?\n"
+                                   "Digite 's' o 'n'")
+        atributosRespuestaMinuscula = atributosRespuesta.lower()
+
+        if atributosRespuestaMinuscula == 's' or 'si':
+            atributo = self.genereAtributo()
+            self.role_builder(roleQuery, atributo)
+        elif atributosRespuestaMinuscula == 'n' or 'no':
+            pass
+        else:
+            print("Escriba una respuesta correcta. ")
+
+    def agregueAtributo(self,query):
+        respuesta = input("¿Desea agregar un atributo al rol?\n"
+                          "Digite 's' o 'n' ")
+        respuestaEnMinuscula = respuesta.lower()
+        if respuestaEnMinuscula == 's' or respuestaEnMinuscula == 'si':
+            clausula = self.genereAtributo()
+            self.role_builder(query, clausula)
+        elif respuestaEnMinuscula == 'n' or respuestaEnMinuscula == 'no':
+            print("Valida")
+        else:
+            print("Escriba una respuesta correcta")
+        return query
+
+    def genereAtributo(self):
+        atributo = input("¿Qué atributo desea que tenga el rol?\n"
+                         "'su' - SUPERUSER\n"
+                         "'cd' - CREATE DATABASE\n"
+                         "'cr' - CREATE ROLE\n"
+                         "'lg' - LOGIN\n"
+                         "'rp' - REPLICATION\n"
+                         "'ps' - PASSWORD\n"
+                         "'n' - SALIR"
+                         "Opción = ")
+        return atributo
+
+    def role_builder(self,query, atributo):
+        if atributo == 'su':
+            query += """ SUPERUSER"""
+            print(query)
+            self.agregueAtributo(query)
+        elif atributo == 'cd':
+            query += """ CREATEDB"""
+            print(query)
+            self.agregueAtributo(query)
+        elif atributo == 'cr':
+            query += """ CREATEROLE"""
+            print(query)
+            self.agregueAtributo(query)
+        elif atributo == 'lg':
+            query += """ LOGIN"""
+            print(query)
+            self.agregueAtributo(query)
+        elif atributo == 'rp':
+            query += """ REPLICATION"""
+            print(query)
+            self.agregueAtributo(query)
+        elif atributo == 'ps':
+            query += """ PASSWORD"""
+            expiracion = input("¿Debería la contraseña tener una fecha de expiración?\n"
+                               "Digite 's' o 'n'")
+            expiracionEnMinuscula = expiracion.lower()
+
+            if expiracionEnMinuscula == 's' or 'si':
+                fecha = input("¿En qué fecha debería expirar la contraseña?\n"
+                              "Ingrese la fecha con el formato 'YYYY-MM-DD'")
+
+                query += """ VALID UNTIL {}""".format(fecha)
+            elif expiracionEnMinuscula == 'n' or 'no':
+                self.agregueAtributo(query)
+            print(query)
+            self.agregueAtributo(query)
+        elif atributo == 'n':
+            print("Valida")
+        else:
+            print("Else")
+
+    def set_role(self):
+        pass
+
+    def alter_role(self):
+        pass
+
+    def drop_role(self):
+        nombreRol = input("Ingrese el nombre del rol a eliminar: ")
+
+        dropRolQuery = """DROP ROLE IF EXISTS {}""".format(nombreRol)
+
+    def grant(self):
+        pass
+
+    def revoke(self):
+        pass
+
 
 
 dbaction = DatabaseAction()
@@ -394,7 +497,7 @@ ddlMenu.set_options([
     ("Crear un nuevo indice único",dbaction.create_index_unique),
     ("Eliminar un indice existente",dbaction.delete_index),
     ("Alterar un indice existente",dbaction.alter_index),
-    ("Crear una nueva función", dbaction.create_Function),
+    ("Crear una nueva función", dbaction.create_function),
     ("Volver al menú principal",ddlMenu.close)])
 
 """MENU PRINCPIAL"""
@@ -403,6 +506,7 @@ mainMenu.set_options([
     ("Ver lista de bases de datos", dbaction.show_all_databases),
     ("Ver base de datos actual", dbaction.show_current_database),
     ("Crear una base de datos", dbaction.create_database),
+    ("Crear una base de datos", dbaction.create_role),
     ("Menu DDL", ddlMenu.open),
     ("Menu DML",dmlMenu.open),
     ("Select",dbaction.select),
