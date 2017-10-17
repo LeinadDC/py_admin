@@ -459,12 +459,51 @@ class DatabaseAction():
         nombreRol = input("Ingrese el nombre del rol a eliminar: ")
 
         dropRolQuery = """DROP ROLE IF EXISTS {}""".format(nombreRol)
+        self.validaCreacion(dropRolQuery)
 
     def grant(self):
-        pass
+        nombreUsuario = input("¿A qué usuario desea otorgarle privilegios?\n")
+        objetoPrivilegios = input("¿Sobre qué tabla desea otorgarle privilegios a {}".format(nombreUsuario))
+
+        privilegios = input("¿Qué tipo de priviliegios desea otorgar?\n"
+                            "Ingrese el nombre del privilegio, separado por coma uno del otro\n"
+                            "Ejemplo: SELECT, UPDATE, CREATE\n"
+                            "Posibles privilegios: \n"
+                            "SELECT\n"
+                            "INSERT\n"
+                            "UPDATE\n"
+                            "DELETE\n"
+                            "TRUNCATE\n"
+                            "REFERENCES\n"
+                            "TRIGGER\n"
+                            "CREATE\n"
+                            "ALL\n"
+                            "Privilegios a otorgar = ")
+
+        grantQuery = """GRANT {} ON {} TO {}""".format(privilegios,objetoPrivilegios,nombreUsuario)
+        self.validaCreacion(grantQuery)
 
     def revoke(self):
-        pass
+        nombreUsuario = input("¿A qué usuario desea quitarle privilegios?\n")
+        objetoPrivilegios = input("¿Sobre qué tabla desea quitarle privilegios a {}".format(nombreUsuario))
+
+        privilegios = input("¿Qué tipo de priviliegios desea quitar?\n"
+                            "Ingrese el nombre del privilegio, separado por coma uno del otro\n"
+                            "Ejemplo: SELECT, UPDATE, CREATE\n"
+                            "Posibles privilegios: \n"
+                            "SELECT\n"
+                            "INSERT\n"
+                            "UPDATE\n"
+                            "DELETE\n"
+                            "TRUNCATE\n"
+                            "REFERENCES\n"
+                            "TRIGGER\n"
+                            "CREATE\n"
+                            "ALL\n"
+                            "Privilegios a quitar = ")
+
+        revokeQuery = """REVOKE {} ON {} FROM {}""".format(privilegios,objetoPrivilegios,nombreUsuario)
+        self.validaCreacion(revokeQuery)
 
 
 
